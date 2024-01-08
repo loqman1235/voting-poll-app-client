@@ -9,7 +9,7 @@ const PollCard: React.FC<IPoll> = ({ question, votes }) => {
     setActiveOption(id === activeOption ? null : id);
   };
   return (
-    <div className="p-6 bg-white shadow-2xl rounded-2xl">
+    <div className="min-w-[540px] p-6 bg-white shadow rounded-sm">
       <h1 className="font-semibold text-xl mb-5 pb-5 border-b border-b-neutral-200">
         {question}
       </h1>

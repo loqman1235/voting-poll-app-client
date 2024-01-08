@@ -6,6 +6,21 @@
 
 @layer base {
   body {
-    @apply font-sans bg-gray-100 text-gray-900;
+    @apply font-sans bg-gray-200 text-gray-900;
+  }
+
+  .animate_progress {
+    animation: progress 0.8s ease-in-out forwards;
+  }
+}
+
+/* Animations */
+
+@keyframes progress {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
   }
 }
