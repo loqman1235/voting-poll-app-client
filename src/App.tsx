@@ -1,26 +1,29 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import PollCard from "./components/PollCard";
-import api from "./api/api";
-import { IPoll } from "./types";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "./app/store";
+import { fetchPollsAsync } from "./features/pollSlice";
+import { IPollsState } from "./types";
 
 const App = () => {
-  const [polls, setPolls] = useState<IPoll[]>([]);
+  // const [polls, setPolls] = useState<IPoll[]>([]);
 
-  const getPolls = async () => {
-    try {
-      const res = await api.get("/polls");
-      if (res.status === 200) {
-        setPolls(res.data.polls);
-        console.log(res.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const { polls, isLoading } = useSelector<RootState, IPollsState>(
+    (state) => state.polls
+  );
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
-    getPolls();
-  }, []);
+    dispatch(fetchPollsAsync());
+  }, [dispatch]);
+
+  if (isLoading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="w-full h-screen flex flex-col items-center justify-center gap-5">

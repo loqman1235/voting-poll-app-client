@@ -5,8 +5,21 @@ import { IPoll } from "../types";
 const PollCard: React.FC<IPoll> = ({ question, votes }) => {
   const [activeOption, setActiveOption] = useState<number | null>(null);
 
-  const handleOptionToggle = (id: number) => {
+  const handleOptionToggle = async (id: number) => {
     setActiveOption(id === activeOption ? null : id);
+
+    // try {
+    //   const res = await api.post(`/polls/vote`, { pollId: _id, option: id });
+
+    //   if (res.status === 200) {
+    //     setActiveOption(id === activeOption ? null : id);
+    //     console.log(res.data);
+    //   }
+
+    //   // setActiveOption(id === activeOption ? null : id);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
   return (
     <div className="min-w-[540px] p-6 bg-white shadow rounded-sm">

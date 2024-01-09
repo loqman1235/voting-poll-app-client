@@ -18,3 +18,9 @@ export interface PollOptionProps {
   isActive: boolean;
   onToggle: (id: number) => void;
 }
+
+export interface IPollsState {
+  polls: IPoll[];
+  isLoading: boolean;
+  error: string | null;
+}
