@@ -12,7 +12,7 @@ const App = () => {
     (state) => state.polls
   );
   const dispatch = useDispatch<AppDispatch>();
-
+  console.log(polls, "polls");
   useEffect(() => {
     dispatch(fetchPollsAsync());
   }, [dispatch]);
