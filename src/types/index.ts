@@ -1,4 +1,4 @@
-interface IVote {
+export interface IVote {
   option: string;
   votes: number;
   percentage: number;
@@ -32,4 +32,12 @@ export interface IPollsState {
   totalVotes: ITotalVotes[];
   isLoading: boolean;
   error: string | null;
+}
+
+export interface IApiError {
+  response: {
+    data: {
+      message: string;
+    };
+  };
 }

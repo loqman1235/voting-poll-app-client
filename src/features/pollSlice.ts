@@ -1,5 +1,5 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { IPoll, IPollsState } from "../types";
+import { IApiError, IPoll, IPollsState } from "../types";
 import api from "../api/api";
 
 const initialState: IPollsState = {
@@ -38,6 +38,7 @@ export const fetchPollsAsync = createAsyncThunk(
   }
 );
 
+// Vote Poll Thunk
 export const votePollAsync = createAsyncThunk(
   "polls/vote",
   async ({ pollId, option }: { pollId: string; option: string }, thunkAPI) => {
@@ -47,7 +48,9 @@ export const votePollAsync = createAsyncThunk(
       return res.data.poll;
     } catch (error) {
       console.log(error);
-      return thunkAPI.rejectWithValue(error.response.data.message);
+      return thunkAPI.rejectWithValue(
+        (error as IApiError).response.data.message
+      );
     }
   }
 );
@@ -104,6 +107,7 @@ const pollSlice = createSlice({
       )
       .addCase(votePollAsync.rejected, (state: IPollsState, action) => {
         console.error("Error voting:", action.payload);
+        state.error = String(action.payload) || "Something went wrong";
       });
   },
 });
