@@ -26,7 +26,7 @@ const App = () => {
   }
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-center gap-5">
+    <div className="w-full h-screen flex  items-center justify-center gap-5">
       {polls.length > 0 &&
         polls.map((poll) => <PollCard key={poll._id} {...poll} />)}
     </div>

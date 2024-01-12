@@ -10,6 +10,7 @@ export interface IPoll {
   options: string[];
   votes: number[];
   percentage: number[];
+  endsAt?: string;
 }
 
 export interface PollOptionProps {
@@ -18,6 +19,7 @@ export interface PollOptionProps {
   percentage: number | undefined;
   isActive: boolean;
   onToggle: (id: number) => void;
+  isPollEnded: boolean;
 }
 
 export interface ITotalVotes {

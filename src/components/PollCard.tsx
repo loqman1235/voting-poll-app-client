@@ -8,8 +8,21 @@ import { votePollAsync } from "../features/pollSlice";
 // import { AppDispatch } from "../app/store";
 // import { votePollAsync } from "../features/pollSlice";
 
-const PollCard: React.FC<IPoll> = ({ _id, question, options, votes }) => {
-  const [activeOption, setActiveOption] = useState<number | null>(null);
+const PollCard: React.FC<IPoll> = ({
+  _id,
+  question,
+  options,
+  votes,
+  endsAt,
+}) => {
+  const [activeOption, setActiveOption] = useState<number | null>(() => {
+    const storedActiveOption = localStorage.getItem("activeOption");
+    return storedActiveOption ? parseInt(storedActiveOption) : null;
+  });
+
+  // check if the poll has ended
+  const isPollEnded = endsAt ? new Date(endsAt) < new Date() : false;
+
   const { totalVotes } = useSelector<RootState, IPollsState>(
     (state) => state.polls
   );
@@ -19,11 +32,15 @@ const PollCard: React.FC<IPoll> = ({ _id, question, options, votes }) => {
   );
   const percentages = votes.map((vote) => {
     if (targetTotalVotes) {
-      return Number(((vote * 100) / targetTotalVotes.total).toFixed(0));
+      return vote !== 0
+        ? Number(((vote * 100) / targetTotalVotes.total).toFixed(0))
+        : 0;
     }
   });
 
   const dispatch = useDispatch<AppDispatch>();
+
+  console.log(isPollEnded, "poll ended?");
 
   const handleOptionToggle = async (id: number) => {
     try {
@@ -32,9 +49,9 @@ const PollCard: React.FC<IPoll> = ({ _id, question, options, votes }) => {
       }
 
       setActiveOption(id === activeOption ? null : id);
+      localStorage.setItem("activeOption", id.toString());
     } catch (error) {
       console.error("Error voting:", error);
-      // Handle errors, if needed
     }
   };
   return (
@@ -53,8 +70,16 @@ const PollCard: React.FC<IPoll> = ({ _id, question, options, votes }) => {
             percentage={percentages[i]}
             onToggle={handleOptionToggle}
             isActive={i === activeOption}
+            isPollEnded={isPollEnded}
           />
         ))}
+      </div>
+
+      {/* Total Votes */}
+      <div className="w-full flex items-center justify-between">
+        <p className="text-neutral-500 text-sm mt-5">
+          Total Votes: {targetTotalVotes?.total}
+        </p>
       </div>
     </div>
   );

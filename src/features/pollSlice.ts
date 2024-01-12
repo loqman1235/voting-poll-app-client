@@ -47,7 +47,7 @@ export const votePollAsync = createAsyncThunk(
       return res.data.poll;
     } catch (error) {
       console.log(error);
-      return thunkAPI.rejectWithValue(error);
+      return thunkAPI.rejectWithValue(error.response.data.message);
     }
   }
 );
@@ -103,7 +103,7 @@ const pollSlice = createSlice({
         }
       )
       .addCase(votePollAsync.rejected, (state: IPollsState, action) => {
-        console.error("Error voting:", action.error);
+        console.error("Error voting:", action.payload);
       });
   },
 });
