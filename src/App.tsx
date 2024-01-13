@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "./app/store";
 import { fetchPollsAsync } from "./features/pollSlice";
 import { IPollsState } from "./types";
+// import Footer from "./components/Footer";
 
 const App = () => {
   // const [polls, setPolls] = useState<IPoll[]>([]);
@@ -26,10 +27,14 @@ const App = () => {
   }
 
   return (
-    <div className="w-full h-screen flex  items-center justify-center gap-5">
-      {polls.length > 0 &&
-        polls.map((poll) => <PollCard key={poll._id} {...poll} />)}
-    </div>
+    <>
+      <div className="w-full h-screen flex  items-center justify-center gap-5">
+        {polls.length > 0 &&
+          polls.map((poll) => <PollCard key={poll._id} {...poll} />)}
+      </div>
+
+      {/* <Footer /> */}
+    </>
   );
 };
 export default App;

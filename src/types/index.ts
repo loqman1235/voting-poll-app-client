@@ -19,7 +19,7 @@ export interface PollOptionProps {
   percentage: number | undefined;
   isActive: boolean;
   onToggle: (id: number) => void;
-  isPollEnded: boolean;
+  hasPollEnded: boolean;
 }
 
 export interface ITotalVotes {

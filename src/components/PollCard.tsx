@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PollOption } from "./PollOption";
 import { IPoll, IPollsState, ITotalVotes } from "../types";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,12 +16,15 @@ const PollCard: React.FC<IPoll> = ({
   endsAt,
 }) => {
   const [activeOption, setActiveOption] = useState<number | null>(() => {
-    const storedActiveOption = localStorage.getItem("activeOption");
-    return storedActiveOption ? parseInt(storedActiveOption) : null;
+    const activeOption = localStorage.getItem(`activeOption[${_id}]`);
+    if (activeOption) {
+      return Number(activeOption);
+    }
+    return null;
   });
 
   // check if the poll has ended
-  const isPollEnded = endsAt ? new Date(endsAt) < new Date() : false;
+  const [hasPollEnded, setHasPollEnded] = useState(false);
 
   const { totalVotes } = useSelector<RootState, IPollsState>(
     (state) => state.polls
@@ -40,8 +43,6 @@ const PollCard: React.FC<IPoll> = ({
 
   const dispatch = useDispatch<AppDispatch>();
 
-  console.log(isPollEnded, "poll ended?");
-
   const handleOptionToggle = async (id: number) => {
     try {
       if (id !== activeOption) {
@@ -49,11 +50,23 @@ const PollCard: React.FC<IPoll> = ({
       }
 
       setActiveOption(id === activeOption ? null : id);
-      localStorage.setItem("activeOption", id.toString());
+      localStorage.setItem(`activeOption[${_id}]`, id.toString());
     } catch (error) {
       console.error("Error voting:", error);
     }
   };
+
+  useEffect(() => {
+    if (endsAt) {
+      const pollEndDate = new Date(endsAt);
+      const currentDate = new Date();
+
+      setHasPollEnded(currentDate > pollEndDate);
+    }
+  }, [endsAt]);
+
+  console.log(hasPollEnded, "Has poll ended?");
+
   return (
     <div className="min-w-[540px] p-6 bg-white shadow rounded-2xl">
       <h1 className="font-semibold text-xl mb-5 pb-5 border-b border-b-neutral-200">
@@ -70,16 +83,19 @@ const PollCard: React.FC<IPoll> = ({
             percentage={percentages[i]}
             onToggle={handleOptionToggle}
             isActive={i === activeOption}
-            isPollEnded={isPollEnded}
+            hasPollEnded={hasPollEnded}
           />
         ))}
       </div>
 
       {/* Total Votes */}
-      <div className="w-full flex items-center justify-between">
-        <p className="text-neutral-500 text-sm mt-5">
+      <div className="w-full flex items-center justify-between mt-5">
+        <p className="text-neutral-500 text-sm ">
           Total Votes: {targetTotalVotes?.total}
         </p>
+        {hasPollEnded && (
+          <p className="text-sm text-neutral-500">Poll has ended</p>
+        )}
       </div>
     </div>
   );
